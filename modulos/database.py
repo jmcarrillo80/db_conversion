@@ -1,5 +1,6 @@
 import pyodbc
 import pandas as pd
+import numpy as np
 
 
 class Database():
@@ -17,7 +18,13 @@ class Database():
         
     @staticmethod
     def query_table(table):
-        df = pd.read_sql_query(f"select * from {table}", Database.conn)
+        cursor = Database.conn.cursor()
+        cursor.execute(f"select * from {table}")
+        cols = []
+        for count, col in enumerate(cursor.description):
+            cols.append(col[0])
+        records = cursor.fetchall()
+        df = pd.DataFrame(np.array(records), columns=cols)
         return df
 
    
