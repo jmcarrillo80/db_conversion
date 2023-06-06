@@ -13,17 +13,20 @@ def main(directory, db_fileFormat, output_fileFormat):
     files = [f for f in files if os.path.isfile(f"{directory}/{f}") and f.endswith(f".{db_fileFormat}")]
     print(*files, sep="\n")
 
+    with open('databases_tables.json') as f:
+        db_dict = json.load(f)
     for db_file in files:
+        print(f"\nTables from database '{db_file}' converted:")
         convObj = Conversion(dbPath=directory, dbName=db_file)
-        with open('databases_tables.json') as f:
-            db_dict = json.load(f)
         for db in db_dict:
             if db['database']==db_file.split(".")[0]:
                 df = convObj.extractData(db['table'])
                 if output_fileFormat=='parquet':
                     convObj.parquetFile(df, db_file.split(".")[0], db['table'])
+                    print(f"\t -{db['table']} --> parquet file")
                 elif output_fileFormat=='json':
                     convObj.jsonFile(df, db_file.split(".")[0], db['table'])
+                    print(f"\t -{db['table']} --> json file")
 
 
 if __name__== "__main__":
