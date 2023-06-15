@@ -5,26 +5,33 @@ import json
 
 class Conversion():
 
-    def __init__(self, dbPath, dbName):
-        self.dbPath = dbPath
-        self.dbName = dbName
+    def __init__(self, db_path, db_fileName):
+        self.db_path = db_path
+        self.db_fileName = db_fileName
         
 
-    def extractData(self, table):
-        db = Database(self.dbPath, self.dbName)
-        conn = db.connect()
-        df = db.query_table(table)
+    def extractDataAccess(self, table):
+        db = Database(self.db_path, self.db_fileName)
+        conn = db.connect_access()
+        df = db.query_table_access(table)
+        conn.close()
+        return df
+
+    def extractDataSqlite(self, table):
+        db = Database(self.db_path, self.db_fileName)
+        conn = db.connect_sqlite()
+        df = db.query_table_sqlite(table)
         conn.close()
         return df
 
     @staticmethod
-    def parquetFile(df, fileName, table):
-        parquet_file = f"outputFiles/{fileName}__{table}.parquet"
+    def parquetFile(df, directory_output, fileName, table):
+        parquet_file = f"{directory_output}/{fileName}__{table}.parquet"
         df.to_parquet(parquet_file, engine='pyarrow', compression = 'gzip')
 
     @staticmethod
-    def jsonFile(df, fileName, table):
-        json_file = f"outputFiles/{fileName}__{table}.json"
+    def jsonFile(df, directory_output, fileName, table):
+        json_file = f"{directory_output}/{fileName}__{table}.json"
         key_dict = df.columns.to_list()
         records = []
         for i in range(0, len(df)):
