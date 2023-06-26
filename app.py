@@ -8,7 +8,7 @@ def main(directory_db, db_name, db_fileFormat, tables, directory_output, output_
     tables = json.loads(str(tables))
     db_file = f"{db_name}.{db_fileFormat}"
 
-    print(f"\nTables from database '{db_file}' converted:")
+    print(f"Tables from database '{db_file}' converted:")
     convObj = Conversion(db_path=directory_db, db_fileName=db_file)
     for table in tables:
         if db_fileFormat == 'mdb':
