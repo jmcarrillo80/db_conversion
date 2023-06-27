@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+import sqlite3
 import pyodbc
 import pandas as pd
 import numpy as np
@@ -18,9 +18,8 @@ class Database():
         return Database.conn
     
     def connect_sqlite(self):              
-        connStr = f'sqlite:///{self.db_path}\\{self.db_fileName}'
-        engine = create_engine(connStr)
-        Database.conn = engine.connect()
+        connStr = f'{self.db_path}\\{self.db_fileName}'
+        Database.conn = sqlite3.connect(connStr)
         return Database.conn
         
     @staticmethod
